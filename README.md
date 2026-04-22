@@ -3,4 +3,4 @@ this is my data science porfolo
 #education:
 simmons university
 
-https://wanwan1123.github.io/name/
+[My First Blog](https://wanwan1123.github.io/name/2026/04/22/blog1)
