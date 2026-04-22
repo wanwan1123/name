@@ -1,0 +1,72 @@
+---
+title: "Facots that cause NYC flights delay"
+author: "Wenli"
+date: "March 6"
+output: 
+  html_document:
+    code_folding: hide
+    theme: flatly
+    toc: true
+    toc_float: true
+    code_download: true
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+# Load any datasets you may need
+library(nycflights13)
+```
+
+# Introduction
+
+For this project, I would like to explore the factors that causes NYC flights delay. Firstly, I will find which airport has high average delay level and I will see if weather and airlines are the factors that cause that airport has high NYC flights delay. The data I used is Flights that Departed NYC in 2013. In this project, I will use airports, flights and airports.
+
+# URL: https://stat2labs.sites.grinnell.edu/Handouts/rtutorials/IntroMerging.html
+# Accessed: Mar 3
+
+```{r, warning = FALSE, message = FALSE}
+flights_2 <- flights %>% left_join(airlines, by = "carrier")%>%
+  left_join(weather, by = c("year", "month", "day", "hour", "origin"))%>%
+  left_join(airports,by= c("dest"="faa"))
+Flight <- flights_2 %>% group_by(origin)%>%
+  summarise(mean_dep_delay = mean(dep_delay, na.rm = TRUE))
+```
+
+# Figure 1
+
+```{r cars}
+mean_dep_delay = mean(flights_2$dep_delay, na.rm = TRUE)
+ggplot(Flight, aes(x = origin, y= mean_dep_delay))+
+  geom_point(color= "red")+
+  labs(x = "airports", y= "mean departure delay", caption = "Source: New York City flights in 2013",
+        title ="Distribution of NYC Departure Delayed flights at Differnet Airports")+
+  theme_minimal()
+```
+
+## Discribtion for figure 1
+
+In this figure, we explore the relationship between airports and departure delay of flights. It is clear to see that EWR had longest mean departure delay of flights in 2013 while LGA was the airport had lowest mean departure delay.
+
+# Figure 2
+
+```{r, warning = FALSE, message = FALSE}
+EWR_airport <- filter(flights_2, origin == "EWR")
+Mean_dep_delay <- mean(EWR_airport$dep_delay, na.rm = TRUE)
+ggplot(EWR_airport, aes(x= carrier, y= Mean_dep_delay, color= precip))+
+  geom_point(aes(size= wind_speed))+
+  theme_minimal()+
+  labs( x= "carrier", y= "departure delay", caption = "Source: New York City flights in 2013",
+         title ="Distribution of NYC Departure Delayed flights at EWR from Different Carriers in 
+        Differnet Weather Conditions")
+```
+
+## Discribtion for figure 2
+
+This graph displays that all carriers had approximately the same mean departure delay in 2013. We could guess that every carriers at EWR had the same ability to handle with terrible weather. Therefore, carriers were not the main reason for departure delay. From the image, we could also tell high wind speed and low precipitation were the factors that cause NYC flights delayed, since for most carriers, the wind speed that caused flights delayed were near 20 to 30. The wind speed for SkyWest Airlines Inc. and Virgin America to delay the flight was 10. Every carrier chose to delay the flights at a similar and low precipitation, which was around to 0.2.
+
+```{r}
+#[linked phrase](https://www.faa.gov/licenses_certificates/aircraft_certification/aircraft_registry/releasable_aircraft_download/)
+```
