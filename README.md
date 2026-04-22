@@ -1,1 +1,4 @@
-# name
+theme: minima
+title: demo data science portfolio 
+author: ELla wan
+description: an example of a data science portfplio
